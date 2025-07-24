@@ -1,9 +1,13 @@
 package presentation;
 
 import java.util.Scanner;
+import presentation.CustomerView;
+import presentation.ProductView;
 
 public class MainView {
     private static final Scanner sc = new Scanner(System.in);
+    private static final CustomerView customerView = new CustomerView();
+
     public void startMenu() {
         int choice;
         do {
@@ -30,7 +34,7 @@ public class MainView {
         String username = sc.nextLine();
         System.out.print("Mật khẩu : ");
         String password = sc.nextLine();
-        System.out.print("====================================");
+        System.out.print("========================================\n");
 
         if (username.equals("admin") && password.equals("admin123")) {
             System.out.println("Đăng nhập thành công!");
@@ -57,8 +61,10 @@ public class MainView {
                     ProductView.showMenu();
                     break;
                 case 2:
+                    customerView.displayCustomerMenu();
                     break;
                 case 3:
+                    InvoiceView.displayInvoiceMenu();
                     break;
                 case 4:
                     break;
@@ -66,7 +72,7 @@ public class MainView {
                     System.out.println("Đã đăng xuất!");
                     break;
                 default:
-                    System.out.println();
+                    System.out.println("Chức năng không hợp lệ!");
             }
         } while (choice != 5);
     }
