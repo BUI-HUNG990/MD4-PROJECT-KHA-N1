@@ -53,7 +53,7 @@ public class MainView {
             System.out.println("3. Quản lý hoá đơn");
             System.out.println("4. Thống kê doanh thu");
             System.out.println("5. Đăng xuất");
-            System.out.println("==================================");
+            System.out.println("================================");
             System.out.print("Nhập lựa chọn: ");
             choice = getValidChoice(1, 5);
             switch (choice) {
