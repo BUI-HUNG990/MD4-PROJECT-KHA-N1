@@ -64,4 +64,3 @@ public class Product {
                 id, name, brand, price, stock);
     }
 }
-

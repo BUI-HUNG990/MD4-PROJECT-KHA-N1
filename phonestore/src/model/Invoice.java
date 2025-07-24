@@ -52,8 +52,8 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return String.format("Invoice [id=%d, customerId=%d, date=%s, total=%.2f]",
-                id, customerId, invoiceDate, totalAmount);
+        return String.format("%-8d | %-8d | %-20s | %,.2f",
+                id, customerId, invoiceDate.toString(), totalAmount);
     }
-}
 
+}

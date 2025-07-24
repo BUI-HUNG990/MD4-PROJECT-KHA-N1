@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAOImpl implements IProductDAO {
+
+    // Lấy toàn bộ sản phẩm từ bảng Product
     @Override
     public List<Product> findAll() {
         List<Product> list = new ArrayList<>();
@@ -16,6 +18,7 @@ public class ProductDAOImpl implements IProductDAO {
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(query);
              ResultSet rs = ps.executeQuery()) {
+            // Duyệt kết quả trả về và ánh xạ vào đối tượng Product
             while (rs.next()) {
                 Product p = new Product(
                         rs.getInt("id"),
@@ -32,15 +35,18 @@ public class ProductDAOImpl implements IProductDAO {
         return list;
     }
 
+    // Thêm một sản phẩm mới vào bảng Product
     @Override
     public boolean insert(Product product) {
         String query = "INSERT INTO Product (name, brand, price, stock) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
+            // Gán giá trị thuộc tính từ đối tượng Product
             ps.setString(1, product.getName());
             ps.setString(2, product.getBrand());
             ps.setDouble(3, product.getPrice());
             ps.setInt(4, product.getStock());
+            // Trả về true nếu thêm thành công
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             System.out.println("Lỗi thêm sản phẩm: " + e.getMessage());
@@ -48,6 +54,7 @@ public class ProductDAOImpl implements IProductDAO {
         }
     }
 
+    // Tìm sản phẩm theo ID
     @Override
     public Product findById(int id) {
         String sql = "SELECT * FROM Product WHERE id = ?";
@@ -55,6 +62,7 @@ public class ProductDAOImpl implements IProductDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
+            // Nếu có kết quả thì tạo đối tượng Product từ dữ liệu trả về
             if (rs.next()) {
                 return new Product(
                         rs.getInt("id"),
@@ -70,11 +78,13 @@ public class ProductDAOImpl implements IProductDAO {
         return null;
     }
 
+    // Cập nhật thông tin sản phẩm
     @Override
     public boolean update(Product product) {
         String sql = "UPDATE Product SET name = ?, brand = ?, price = ?, stock = ? WHERE id = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+            // Gán các giá trị cập nhật
             ps.setString(1, product.getName());
             ps.setString(2, product.getBrand());
             ps.setDouble(3, product.getPrice());
@@ -87,6 +97,7 @@ public class ProductDAOImpl implements IProductDAO {
         }
     }
 
+    // Xóa sản phẩm theo ID
     @Override
     public boolean delete(int id) {
         String sql = "DELETE FROM Product WHERE id = ?";
@@ -100,6 +111,7 @@ public class ProductDAOImpl implements IProductDAO {
         }
     }
 
+    // Tìm sản phẩm theo tên thương hiệu
     @Override
     public List<Product> searchByBrand(String keyword) {
         List<Product> result = new ArrayList<>();
@@ -124,6 +136,7 @@ public class ProductDAOImpl implements IProductDAO {
         return result;
     }
 
+    // Tìm sản phẩm theo khoảng giá
     @Override
     public List<Product> searchByPriceRange(double minPrice, double maxPrice) {
         List<Product> result = new ArrayList<>();
@@ -149,6 +162,7 @@ public class ProductDAOImpl implements IProductDAO {
         return result;
     }
 
+    // Tìm sản phẩm có số lượng tồn kho lớn hơn hoặc bằng giá trị chỉ định
     @Override
     public List<Product> searchByStock(int minStock) {
         List<Product> result = new ArrayList<>();
@@ -173,4 +187,3 @@ public class ProductDAOImpl implements IProductDAO {
         return result;
     }
 }
-

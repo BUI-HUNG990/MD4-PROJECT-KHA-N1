@@ -41,4 +41,5 @@ public class InputUtil {
             System.out.println("Chỉ được nhập 'y' hoặc 'n'.");
         }
     }
+
 }

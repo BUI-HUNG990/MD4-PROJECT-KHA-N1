@@ -67,6 +67,7 @@ public class MainView {
                     InvoiceView.displayInvoiceMenu();
                     break;
                 case 4:
+                    RevenueView.displayRevenueMenu();
                     break;
                 case 5:
                     System.out.println("Đã đăng xuất!");
