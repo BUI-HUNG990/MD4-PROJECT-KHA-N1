@@ -35,10 +35,18 @@ CREATE TABLE Invoice
 (
     id           INT PRIMARY KEY AUTO_INCREMENT,       -- nhận dạng
     customer_id  INT,                                  -- id khách hàng
-    created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,   -- hd đã tạo
+    invoice_date   DATETIME DEFAULT CURRENT_TIMESTAMP,   -- hd đã tạo
     total_amount DECIMAL(12, 2) NOT NULL,              -- tổng tiền
     FOREIGN KEY (customer_id) REFERENCES Customer (id) -- khóa ngoại
 );
+
+
+DROP TABLE IF EXISTS Invoice_Details;
+DROP TABLE IF EXISTS Invoice;
+DROP TABLE IF EXISTS Customer;
+DROP TABLE IF EXISTS Product;
+DROP TABLE IF EXISTS Admin;
+
 
 -- bảng chi tiết hóa đơn
 CREATE TABLE Invoice_Details
@@ -75,20 +83,20 @@ DELIMITER ;
 
 
 DELIMITER $$
-CREATE PROCEDURE place_order( -- tạo place_order có 3 tham số
-    IN p_customer_id INT, -- id kh
-    IN p_product_id INT, -- id sp
-    IN p_quantity INT -- sl muốn đặt
+
+CREATE PROCEDURE place_order(
+    IN p_customer_id INT,  -- ID khách hàng
+    IN p_product_id INT,   -- ID sản phẩm
+    IN p_quantity INT      -- Số lượng đặt hàng
 )
 BEGIN
-    -- khai báo biến
-    DECLARE v_price DECIMAL(12, 2); -- đơn giá sp
-    DECLARE v_stock INT; -- sl hàng ở kho
-    DECLARE v_total DECIMAL(12, 2); -- thành tiền
-    DECLARE v_invoice_id INT;
-    -- id hđ mới
+    -- Khai báo biến
+    DECLARE v_price DECIMAL(12, 2);  -- Giá sản phẩm
+    DECLARE v_stock INT;             -- Số lượng tồn kho
+    DECLARE v_total DECIMAL(12, 2);  -- Tổng tiền
+    DECLARE v_invoice_id INT;        -- ID hóa đơn mới
 
-    -- lỗi xảy ra thì rollback và báo lỗi
+    -- Bắt lỗi và rollback nếu có lỗi SQL
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
         BEGIN
             ROLLBACK;
@@ -97,39 +105,46 @@ BEGIN
 
     START TRANSACTION;
 
-    -- lấy đơn giá và số lượng tồn kho của sản phẩm
+    -- Lấy giá và tồn kho từ bảng Product
     SELECT price, stock
     INTO v_price, v_stock
     FROM Product
     WHERE id = p_product_id;
 
+    -- Kiểm tra sản phẩm có tồn tại hay không
+    IF v_price IS NULL OR v_stock IS NULL THEN
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Sản phẩm không tồn tại!';
+    END IF;
 
-    -- ktra sl tồn kho
+    -- Kiểm tra tồn kho đủ không
     IF v_stock < p_quantity THEN
         ROLLBACK;
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Không đủ hàng trong kho!';
     END IF;
 
-    -- tổng tiền đơn hàng
+    -- Tính tổng tiền
     SET v_total = v_price * p_quantity;
 
-    -- chi tiết hóa đơn
-    INSERT INTO Invoice (customer_id, total_amount)
-    VALUES (p_customer_id, v_total);
+    -- Tạo hóa đơn
+    INSERT INTO Invoice (customer_id, invoice_date, total_amount)
+    VALUES (p_customer_id, NOW(), v_total);
 
-    -- hd vừa tạo
+    -- Lấy ID hóa đơn vừa tạo
     SET v_invoice_id = LAST_INSERT_ID();
 
-
-    -- thêm chi tiết hđ
+    -- Thêm chi tiết hóa đơn
     INSERT INTO Invoice_Details (invoice_id, product_id, quantity, unit_price)
     VALUES (v_invoice_id, p_product_id, p_quantity, v_price);
 
-    -- cập nhật lại tồn kho
+    -- Cập nhật tồn kho sản phẩm
     UPDATE Product
     SET stock = stock - p_quantity
     WHERE id = p_product_id;
+
     COMMIT;
 END$$
 
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS place_order;
