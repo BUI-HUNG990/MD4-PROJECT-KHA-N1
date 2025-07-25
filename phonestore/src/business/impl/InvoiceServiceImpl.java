@@ -59,4 +59,5 @@ public class InvoiceServiceImpl implements InvoiceService {
     public Map<String, Double> getRevenueByYear() {
         return invoiceDAO.getRevenueBy("YEAR");
     }
+
 }

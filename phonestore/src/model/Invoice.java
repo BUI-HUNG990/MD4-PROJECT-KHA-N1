@@ -7,15 +7,21 @@ public class Invoice {
     private int customerId;
     private Date invoiceDate;
     private double totalAmount;
+    private String customerName;
+
 
     public Invoice() {
     }
-
-    public Invoice(int id, int customerId, Date invoiceDate, double totalAmount) {
+    public Invoice(int id, int customerId, String customerName, Date invoiceDate, double totalAmount) {
         this.id = id;
         this.customerId = customerId;
+        this.customerName = customerName;
         this.invoiceDate = invoiceDate;
         this.totalAmount = totalAmount;
+    }
+
+    public String getCustomerName() {
+        return customerName;
     }
 
     public int getId() {
@@ -52,8 +58,8 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return String.format("%-8d | %-8d | %-20s | %,.2f",
-                id, customerId, invoiceDate.toString(), totalAmount);
+        return String.format("%-8d | %-8d | %-20s | %-20s | %-12.2f",
+                id, customerId, customerName, invoiceDate.toString(), totalAmount);
     }
 
 }

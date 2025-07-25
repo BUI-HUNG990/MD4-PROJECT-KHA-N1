@@ -62,7 +62,7 @@ public class ProductView {
         if (list.isEmpty()) {
             System.out.println("Không có sản phẩm nào!");
         } else {
-            System.out.println("Danh sách sản phẩm:");
+            System.out.println("======================= Danh sách sản phẩm =========================");
             list.forEach(System.out::println);
         }
     }

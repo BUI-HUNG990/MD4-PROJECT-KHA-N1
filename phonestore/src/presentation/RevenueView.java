@@ -26,20 +26,20 @@ public class RevenueView {
                 sc.next();
             }
             choice = sc.nextInt();
-            sc.nextLine(); // bỏ qua dấu xuống dòng
+            sc.nextLine();
 
             switch (choice) {
                 case 1:
-                    displayRevenueBy("DATE");
+                    displayRevenueBy("NGÀY");
                     break;
                 case 2:
-                    displayRevenueBy("MONTH");
+                    displayRevenueBy("THÁNG");
                     break;
                 case 3:
-                    displayRevenueBy("YEAR");
+                    displayRevenueBy("NĂM");
                     break;
                 case 4:
-                    System.out.println("⬅Quay lại menu chính");
+                    System.out.println("Quay lại menu chính");
                     break;
                 default:
                     System.out.println("Lựa chọn không hợp lệ. Vui lòng chọn lại.");
@@ -49,9 +49,9 @@ public class RevenueView {
 
     private static void displayRevenueBy(String type) {
         Map<String, Double> revenues = switch (type) {
-            case "DATE" -> invoiceService.getRevenueByDate();
-            case "MONTH" -> invoiceService.getRevenueByMonth();
-            case "YEAR" -> invoiceService.getRevenueByYear();
+            case "NGÀY" -> invoiceService.getRevenueByDate();
+            case "THÁNG" -> invoiceService.getRevenueByMonth();
+            case "NĂM" -> invoiceService.getRevenueByYear();
             default -> null;
         };
 
